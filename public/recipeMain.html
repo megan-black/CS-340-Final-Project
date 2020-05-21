@@ -1,0 +1,233 @@
+<!-- This is the html file for the recipe site -->
+<html>
+ <head>
+    <title>Hungry College Recipes</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap" rel="stylesheet">
+
+    <script src="recipe.js" charset="utf-8" defer></script>
+  </head>
+  <body>
+
+    <header>
+
+      <div class="header-image-container">
+        <!-- <img src= alt="Header Image"> -->
+      </div>
+
+      <h1 class="site-title"><a href="#">Hungry College Recipes</a></h1>
+
+    </header>
+
+      <aside class="top-filter-bar">
+        <!-- I think the way to filter for the recipes first given the meal might be this -->
+        <div class="filter-input-box">
+          <button id="filter-all-button" class="all-button">All</button>
+        </div>
+
+        <div class="filter-input-box">
+          <button id="filter-breakfast-button" class="breakfast-button">Breakfast</button>
+        </div>
+
+        <div class="filter-input-box">
+          <button id="filter-lunch-button" class="lunch-button">Lunch</button>
+        </div>
+
+        <div class="filter-input-box">
+          <button id="filter-dinner-button" class="dinner-button">Dinner</button>
+        </div>
+
+        <div class="filter-input-box">
+          <button id="filter-dessert-button" class="dessert-button">Dessert</button>
+        </div>
+
+        <div class="filter-input-box">
+          <button id="filter-snack-button" class="snack-button">Snack</button>
+        </div>
+      </aside>
+
+  <main class="content">
+      <aside class="side-filter-box">
+        <!-- Thought we could put that side box into here -->
+          <h2>Recipes</h2>
+          <div class="filter-input-box">
+            <label for="filter-search" class="filter-input-label">Search</label>
+            <div class="filter-element">
+              <input type="text" name="filter-search" id="filter-search" class="filter-input">
+            </div>
+          </div>
+
+          <div class="filter-input-box">
+            <label for="filter-cook-time" class="filter-input-label">Cook Time</label>
+            <div class="filter-element">
+              <input type="text" name ="filter-cook-time" id="filter-cook-time" class="filter-input">
+            </div>
+          </div>
+
+          <div class="filter-input-box">
+            <label for="filter-rating" class="filter-input-label">Rating</label>
+            <div class="filter-element">
+              <input type="text" name="filter-rating" id="filter-rating" class="filter-input">
+            </div>
+          </div>
+
+          <!-- <div class="filter-input-box">
+            <fieldset id="filter-ingredient" class="filter-fieldset">
+              <legend>Ingredients</legend>
+              <div>
+                <input type="checkbox" name="filter-ingredient" id="filter-water" value="water">
+                <label for="filter-ingredient-water">Water</label>
+              </div>
+              <div>
+                <input type="checkbox" name="filter-ingredient" id="filter-top-ramen" value="top-ramen">
+                <label for="filter-ingredient-ramen">Top Ramen</label>
+              </div>
+            </fieldset>
+          </div> -->
+
+        <button id="filter-search-button" class="action-button">Search</button>
+
+        <div class= "filter-name-list">
+          <ul class = "filter-name-unordered-list">
+            <li class = "filter-recipe-name" data-title="A Very Nice Bowl of Top Ramen"> <button>A Very Nice Bowl of Top Ramen </button></li>
+            <li class = "filter-recipe-name" data-title="A Bowl of Cereal"> <button>A Bowl of Cereal</button> </li>
+            <li class = "filter-recipe-name" data-title="A Cool Sandwich"> <button>A Cool Sandwich</button> </li>
+            <!-- <li class = "filter-recipe-name" data-title=> <button>Recipe Name</button> </li> -->
+            <!-- <li class = "filter-recipe-name" data-title=> <button>Recipe Name</button> </li> -->
+            <!-- <li class = "filter-recipe-name" data-title=> <button>Recipe Name</button> </li> -->
+          </ul>
+        </div>
+
+      </aside>
+
+      <section id="recipes">
+        <div class="recipe" data-cooktime="120" data-rating="5" data-title="a very nice bowl of top ramen" data-type="dinner">
+          <div class="recipeTitle">
+            <a class="recipe-title" data-name="A Very Nice Bowl of Top Ramen">A Very Nice Bowl of Top Ramen</a>
+          </div>
+          <div class="recipe-contents">
+            <div class="recipe-info-container">
+              <span class="recipe-cooktime">Cook Time: 120 minutes</span> <span class="recipe-rating">Rating: 5</span>
+            </div>
+            <div class="recipe-ingredients">
+              <ul style="list-style-type:square;">
+                <li>Top Ramen (1 packet)</li>
+                <li>Water (3 cups)</li>
+              </ul>
+            </div>
+            <div class="recipe-instructions">
+              <ol>
+                <li>Heat up the water in a pot on the stove until boiling</li>
+                <li>Insert the noodles from the top ramen packet into the boiling water and wait 3 minutes</li>
+                <li>Open up the flavor packet and dump contents into pot with boiling noodes. Stir.</li>
+                <li>Once fully mixed, take pot off the heat and pour the ramen and broth into a serving bowl.</li>
+                <li>Enjoy!</li>
+              </ol>
+            </div>
+          </div>
+          <div class="images">
+            <div class="recipe-image-container">
+              <img src="https://odditymall.com/includes/content/upload/bowl-of-ramen-noodles-phone-and-tablet-dock-8141.jpg" alt="A Great Bowl of Ramen" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://odditymall.com/includes/content/upload/bowl-of-ramen-noodles-phone-and-tablet-dock-8141.jpg" alt="A Great Bowl of Ramen" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://odditymall.com/includes/content/upload/bowl-of-ramen-noodles-phone-and-tablet-dock-8141.jpg" alt="A Great Bowl of Ramen" height="200">
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="recipe" data-cooktime="5" data-rating="3" data-title="a bowl of cereal" data-type="breakfast">
+          <div class="recipeTitle">
+            <a class="recipe-title" data-name="A Bowl of Cereal">A Bowl of Cereal</a>
+          </div>
+          <div class="recipe-contents">
+            <div class="recipe-info-container">
+              <span class="recipe-cooktime">Cook Time: 5 minutes</span> <span class="recipe-rating">Rating: 3</span>
+            </div>
+            <div class="recipe-ingredients">
+              <ul style="list-style-type:square;">
+                <li>Cereal Box (1)</li>
+                <li>Milk (16oz)</li>
+              </ul>
+            </div>
+            <div class="recipe-instructions">
+              <ol>
+                <li>Get a bowl</li>
+                <li>Pour Cereal into bowl</li>
+                <li>Pour Milk into bowl</li>
+                <li>Enjoy!</li>
+              </ol>
+            </div>
+          </div>
+          <div class="images">
+            <div class="recipe-image-container">
+              <img src="https://www.humphreysfarm.com/productcart/pc/catalog/2862-lg.jpg" alt="A Great Bowl of Cereal" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://www.humphreysfarm.com/productcart/pc/catalog/2862-lg.jpg" alt="A Great Bowl of Cereal" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://www.humphreysfarm.com/productcart/pc/catalog/2862-lg.jpg" alt="A Great Bowl of Cereal" height="200">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="recipe" data-cooktime="10" data-rating="3" data-title="a cool sandwich" data-type="lunch">
+          <div class="recipeTitle">
+            <a class="recipe-title" data-name="A Cool Sandwich">A Cool Sandwich</a>
+          </div>
+          <div class="recipe-contents">
+            <div class="recipe-info-container">
+              <span class="recipe-cooktime">Cook Time: 10 minutes</span> <span class="recipe-rating">Rating: 3</span>
+            </div>
+            <div class="recipe-ingredients">
+              <ul style="list-style-type:square;">
+                <li>Sliced Bread (2 Slices)</li> <!-- I dont know how to templitize this -->
+                <li>Chedder Cheese (3 Slices)</li> <!-- I dont know how to templitize this -->
+                <li>Bacon (4 Slices)</li> <!-- I dont know how to templitize this -->
+                <li>Lettuce (4 Leaves)</li> <!-- I dont know how to templitize this -->
+                <li>Tomato (1 Slices)</li> <!-- I dont know how to templitize this -->
+              </ul>
+            </div>
+            <div class="recipe-instructions">
+              <ol>
+                <li>Get the Ingredients</li> <!-- I dont know how to templitize this -->
+                <li>Toast your bread</li> <!-- I dont know how to templitize this -->
+                <li>Put the ingredients on the bread</li> <!-- I dont know how to templitize this -->
+                <li>Enjoy!</li> <!-- I dont know how to templitize this -->
+              </ol>
+            </div>
+          </div>
+          <div class="images">
+            <div class="recipe-image-container">
+              <img src="https://www.landolakes.com/RecipeManagementSystem/media/Recipe-Media-Files/Recipes/Retail/x17/2018_Avocado-and-Bacon-Grilled-Cheese_2644_600x600.jpg?ext=.jpg" alt="A Cool Sandwich" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://www.landolakes.com/RecipeManagementSystem/media/Recipe-Media-Files/Recipes/Retail/x17/2018_Avocado-and-Bacon-Grilled-Cheese_2644_600x600.jpg?ext=.jpg" alt="A Cool Sandwich" height="200">
+            </div>
+            <div class="recipe-image-container">
+              <img src="https://www.landolakes.com/RecipeManagementSystem/media/Recipe-Media-Files/Recipes/Retail/x17/2018_Avocado-and-Bacon-Grilled-Cheese_2644_600x600.jpg?ext=.jpg" alt="A Cool Sandwich" height="200">
+            </div>
+          </div>
+        </div>
+
+
+
+
+      <!-- </div> -->
+
+      </section>
+
+    </main>
+
+
+
+  </body>
+ </html>

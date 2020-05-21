@@ -1,1 +1,2 @@
-# CS-340-Final-Project
+# PMNS-290-Final
+CS290 Final Project

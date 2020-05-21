@@ -1,0 +1,152 @@
+<aside class="top-filter-bar">
+  <!-- I think the way to filter for the recipes first given the meal might be this -->
+  <div class="filter-input-box">
+    <button id="filter-all-button" class="all-button">All</button>
+  </div>
+
+  <div class="filter-input-box">
+    <button id="filter-breakfast-button" class="breakfast-button">Breakfast</button>
+  </div>
+
+  <div class="filter-input-box">
+    <button id="filter-lunch-button" class="lunch-button">Lunch</button>
+  </div>
+
+  <div class="filter-input-box">
+    <button id="filter-dinner-button" class="dinner-button">Dinner</button>
+  </div>
+
+  <div class="filter-input-box">
+    <button id="filter-dessert-button" class="dessert-button">Dessert</button>
+  </div>
+
+  <div class="filter-input-box">
+    <button id="filter-snack-button" class="snack-button">Snack</button>
+  </div>
+</aside>
+
+<main class="content">
+<aside class="side-filter-box">
+  <!-- Thought we could put that side box into here -->
+    <h2>Recipes</h2>
+    <div class="filter-input-box">
+      <label for="filter-search" class="filter-input-label">Search</label>
+      <div class="filter-element">
+        <input type="text" name="filter-search" id="filter-search" class="filter-input">
+      </div>
+    </div>
+
+    <div class="filter-input-box">
+      <label for="filter-cook-time" class="filter-input-label">Cook Time</label>
+      <div class="filter-element">
+        <input type="text" name ="filter-cook-time" id="filter-cook-time" class="filter-input">
+      </div>
+    </div>
+
+    <div class="filter-input-box">
+      <label for="filter-rating" class="filter-input-label">Rating</label>
+      <div class="filter-element">
+        <input type="text" name="filter-rating" id="filter-rating" class="filter-input">
+      </div>
+    </div>
+
+  <button id="filter-search-button" class="action-button">Search</button>
+
+  <div class= "filter-name-list">
+    <ul class = "filter-name-unordered-list">
+      {{#each filternames}}
+        {{> filtername}}
+      {{/each}}
+    </ul>
+  </div>
+
+</aside>
+
+<section id="recipes">
+
+  {{#each recipes}}
+    {{> recipe}}
+  {{/each}}
+
+<!-- </div> -->
+
+</section>
+
+</main>
+
+<!-- Don't know a different button but thought that the plus was okay (Megan) -->
+<button type="button" id="add-recipe-button"><i class="fas fa-plus"></i></button>
+
+<div id="modal-backdrop" class="hidden"></div>
+<div id="create-recipe-modal" class="hidden">
+  <div class="modal-dialog">
+
+    <div class="modal-header">
+      <h3>Post a Recipe</h3>
+      <button type="button" id="modal-close" class="modal-hide-button">&times;</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="recipe-page-element">
+        <label for="recipe-time-input">Cook Time</label>
+        <input type="text" id="recipe-time-input"></input>
+      </div>
+
+      <div class="recipe-page-element">
+        <label for="recipe-rating-input">Rating</label>
+        <input type="text" id="recipe-rating-input"></input>
+      </div>
+
+      <div class="recipe-page-element">
+        <label for="recipe-title-input">Recipe Name</label>
+        <input type="text" id="recipe-title-input"></input>
+      </div>
+
+      <div class="recipe-page-element">
+        <fieldset id="recipe-type-fieldset" class="recipe-fieldset">
+          <legend>Type</legend>
+          <div>
+            <input type="radio" name="recipe-type" id="recipe-type-breakfast" value="breakfast" checked>
+            <label for="recipe-type-breakfast">Breakfast</label>
+          </div>
+          <div>
+            <input type="radio" name="recipe-type" id="recipe-type-lunch" value="lunch">
+            <label for="recipe-type-lunch">Lunch</label>
+          </div>
+          <div>
+            <input type="radio" name="recipe-type" id="recipe-type-dinner" value="dinner">
+            <label for="recipe-type-dinner">Dinner</label>
+          </div>
+          <div>
+            <input type="radio" name="recipe-type" id="recipe-type-dessert" value="dessert">
+            <label for="recipe-type-dessert">Dessert</label>
+          </div>
+          <div>
+            <input type="radio" name="recipe-type" id="recipe-type-snack" value="snack">
+            <label for="recipe-type-snack">Snack</label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="recipe-page-element">
+        <p>Ingredient List</p>
+        <input type="text" id="ingredients">
+      </div>
+      <div class="recipe-page-element">
+        <p>Instruction List</p>
+        <input type="text" id="instructions">
+      </div>
+      <div class="recipe-page-element">
+        <label for="recipe-photo-input">Photo URL</label>
+        <input type="text" id="recipe-photo-input">
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" id="modal-cancel" class="modal-hide-button-action-button">Cancel</button>
+      <button type="button" id="modal-accept" class="action-button">Create Recipe</button>
+    </div>
+
+  </div>
+</div>

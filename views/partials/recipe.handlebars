@@ -1,0 +1,43 @@
+
+<!-- This isn't complete and we need to add data typing for the sorting-->
+<!-- Takes in the following:
+  time - string
+  rating - string
+  title - string
+  type - string
+  ingredients - array of objects with items and amounts
+  instructions - ordered array of strings
+  images - ordered array of image urls (May be broken, will have to see)
+-->
+
+<div class="recipe" data-cooktime="{{time}}" data-rating="{{rating}}" data-title="{{title}}" data-type="{{type}}">
+  <div class="recipeTitle">
+    <a class="recipe-title" data-name="{{title}}">{{title}}</a>
+  </div>
+  <div class="recipe-contents">
+    <div class="recipe-info-container">
+      <span class="recipe-cooktime">Cook Time: {{time}} minutes</span> <span class="recipe-rating">Rating: {{rating}}</span>
+    </div>
+    <div class="recipe-ingredients">
+      <ul style="list-style-type:square;">
+        <!--Ingredients is an array of objects containing items and amounts-->
+        {{#each ingredients}}
+          {{> ingredient}}
+        {{/each}}
+      </ul>
+    </div>
+    <div class="recipe-instructions">
+      <ol>
+        <!-- Instructions is an array of strings-->
+        {{#each instructions}}
+          {{> instruction}}
+        {{/each}}
+      </ol>
+    </div>
+  </div>
+  <div class="images">
+    {{#each images}}
+      {{> image}}
+    {{/each}}
+  </div>
+</div>

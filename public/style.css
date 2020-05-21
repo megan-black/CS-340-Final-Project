@@ -1,0 +1,332 @@
+/* This is the CSS file for the recipe website, it creates the look and feel of the site */
+
+/*Provisional Color Palette*/
+/*FBFBFC - "white"*/
+/*95A79E - grey*/
+/*D08F24 - orange*/
+/*C15236 - red*/
+/*2C3D3C - "black"*/
+
+body{
+  font-family: 'Josefin Sans', sans-serif;
+  color: #FBFBFC;
+  background-color: rgb(242, 229, 213);
+}
+
+header {
+  display: flex;
+  /*font-family: 'Josefin Sans', sans-serif;*/
+  color: #FBFBFC;
+  background-color: #95A79E;
+  height: 110px;
+  padding-top: 1px;
+}
+
+ .site-title a {
+  color: #FBFBFC;
+  font-size: 85px;
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+
+.top-filter-bar {
+  display: flex;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.top-filter-bar button {
+  display: flex;
+  font-size: 35px;
+  margin-right: 20px;
+  color: #FBFBFC;
+  padding: 0px 10px 0px 10px;
+  border: none;
+  background-color: #C15236;
+}
+
+.top-filter-bar button:focus {
+  background-color: white;
+  color: #C15236;
+}
+
+.filter-recipe-name button {
+  border: 2px solid white;
+  font-size: 20px;
+  color: #FBFBFC;
+  background-color: #D08F24;
+}
+
+.content {
+  display: flex;
+}
+
+.side-filter-box {
+  display: inline-block;
+  min-width: 300px;
+  max-width: 300px;
+  font-size: 20px;
+  margin: 10px 10px auto 0px;
+  padding: 0px 20px 20px 20px;
+  background-color: #D08F24;
+}
+
+.side-filter-box h2 {
+  margin-top: 10px;
+  margin-left: 70px;
+  font-size: 40px;
+}
+
+.filter-input-box {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.filter-element {
+  margin: 0 5px;
+  flex: 1 1 100%;
+}
+
+.filter-input {
+  font-size: 20px;
+  width: 100%;
+}
+
+.action-button {
+  font-size: 30px;
+  color: white;
+  background-color: #C15236;
+  border: 5px solid white;
+}
+
+.action-button:hover {
+  background-color: white;
+  color: #C15236;
+}
+
+#filter-search-button {
+  width: 100%;
+}
+
+#recipes {
+  display: inline-block;
+<<<<<<< HEAD
+  margin: 20px 10px auto 10px;
+=======
+  margin: 10px 10px auto 10px;
+  /* border: 2px solid black; */
+>>>>>>> cebcfdf9245ac3648596af19aa8607577b5ef5e8
+}
+
+.recipe-title{
+  font-size: 50px;
+  color: #FBFBFC;
+<<<<<<< HEAD
+  padding: 10px;
+  margin-top: 10px;
+  width: 100%;
+=======
+  /* padding: 0px 10px 0px 10px; */
+}
+
+.recipeTitle{
+  text-align: center;
+  background-color: #D08F24;
+  padding-top: 10px;
+>>>>>>> cebcfdf9245ac3648596af19aa8607577b5ef5e8
+}
+
+.recipe {
+  font-size: 18px;
+  /* margin-top: 20px; */
+  /* padding: 10px; */
+  display: none;
+}
+
+.recipe-contents{
+  background-color: #95A79E;
+  padding: 10px;
+
+}
+
+.recipe-image-container{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid white;
+}
+
+.filter-name-unordered-list{
+  list-style-type: none;
+  padding-inline-start: 0px;
+}
+
+.filter-recipe-name{
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.filter-recipe-name:hover{
+  /* font-weight: bold; */
+  text-decoration: underline;
+}
+.visable{
+  display: inline-block;
+}
+
+.images{
+  display: flex;
+  justify-content: center;
+  background-color: #95A79E;
+  padding-bottom: 20px;
+}
+
+ol{
+  margin-bottom: 0px;
+}
+
+/* This is css for the modal/button */
+
+.modal-header h3 {
+  background-color: #D08F24;
+  margin: 0px;
+  padding: 10px;
+  font-size: 30px;
+  color: white;
+  text-align: center; 
+}
+
+#add-recipe-button {
+  background-color: #D08F24;
+  border: 0px solid rgba(0,0,0,0.10);
+  position: fixed;
+  color: black;
+  font-size: 30px;
+  height: 50px;
+  width: 50px;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 6px 6px 8px #CFCFCF;
+}
+
+#add-recipe-button:hover,
+#add-recipe-button:focus {
+  right: 27px;
+  bottom: 27px;
+  height: 66px;
+  width: 66px;
+  border-radius: 33px;
+  font-size: 40px;
+}
+
+#add-recipe-button:focus {
+  outline: none;
+}
+
+#modal-backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+#create-recipe-modal {
+  color: black;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1010;
+  overflow: scroll;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-dialog {
+  width: auto;
+  max-width: 600px;
+  min-width: 350px;
+  min-height: 300px;
+  margin: 40px auto;
+  background-color: #fff;
+  //border-radius: 15px;
+}
+
+.modal-header {
+  position: relative;
+  padding: 10px 20px;
+}
+
+#modal-close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  padding: 2px;
+  cursor: pointer;
+}
+#modal-close:hover {
+  background: #C15236;
+  color: white;
+}
+
+.modal-body {
+  padding: 20px;
+}
+.post-input-element {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.recipe-page-element > label {
+  font-weight: 600;
+  flex: 1 75px;
+  margin-right: 10px;
+}
+
+.recipe-page-element input {
+  flex: 6 200px;
+  margin: 8px;
+  font-size: 20px;
+  border: 1px solid #aaa;
+}
+
+.recipe-fieldset {
+  flex: 1 100%;
+  border: 1px solid #ababab;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 10px 20px 10px;
+}
+
+#modal-cancel,
+#modal-accept {
+  margin-right: 20px;
+}
+
+#modal-cancel {
+  color: #C15236;
+  background-color: white;
+  border: 2px solid #C15236;
+}
+
+#modal-cancel:hover {
+  background-color: #C15236;
+  color: white;
+}
