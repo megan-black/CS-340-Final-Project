@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <title>Recipe Builder</title>
+
+  <meta charset='utf-8'>
+  <!-- links -->
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@600&family=Roboto:wght@300&display=swap" rel="stylesheet">
+  <link href="main.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Recipe Builder</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Journal</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Collections</a>
+          </li>
+          <form class="form-inline">
+            <button class="btn btn-outline-success" type="submit">Account</button>
+          </form>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <main class="main">
+    <h1 class="display-4">Collections</h1>
+    <div class="collection-container">
+      <div class="collection-side">
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h3 class="card-title">Collection Title</h3>
+          <p class="card-text">Some quick example text</p>
+        </div>
+        <div class="card" style="width: 18rem;">
+          <div class="card-body">
+            <h3 class="card-title">Collection Title</h3>
+            <p class="card-text">Some quick example text</p>
+          </div>
+          </div>
+          <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h3 class="card-title">Collection Title</h3>
+              <p class="card-text">Some quick example text</p>
+            </div>
+          </div>
+          </div>
+    </div>
+    <div class="collection-main"><br>
+      <form>
+      <input id="collection-name" placeholder="Title of collection..." type="text"></input><br>
+      <div class="form-group">
+        <center> <label>Recipes to Include</label></center>
+        <select multiple class="form-control" id="exampleFormControlSelect1">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+        </select>
+      </div>
+      <input type="submit" value="Submit"></input><br>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

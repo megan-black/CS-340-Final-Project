@@ -1,0 +1,115 @@
+html {
+  font-family: "Roboto", sans-serif;
+  background-color: #bfe0bf;
+}
+h1 h2 h3 {
+  font-family: "Hind Siliguri", sans-serif;
+}
+
+/* header items */
+header {
+  display: flex;
+  flex-direction: row;
+  flex-flow: wrap;
+}
+header h1 {
+  text-align: left;
+  order: 1;
+  padding-right: 20px;
+}
+header h2 {
+  order: 2;
+  padding: 20px;
+}
+
+.main {
+  background-color: #bfe0bf;
+}
+
+.display-4 {
+  background-color: #bfe0bf;
+}
+
+.collection-container {
+  display: flex;
+  background-color: #bfe0bf;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-content: space-around;
+}
+
+.card-body {
+  background-color: #309430;
+}
+
+.collection-main {
+  flex-grow: 2;
+  margin-left: 15px;
+  margin-right: 5em;
+  background-color: #309430;
+}
+
+.collection-side {
+  margin-left: 5em;
+  background-color: #006400;
+}
+
+.collection-name {
+  max-width: 100%;
+}
+
+.account-button {
+  order: 3;
+  text-align: right;
+  position: absolute;
+  left: 1500px;
+  top: 50px;
+}
+.account-button button {
+  background-color: #366536;
+}
+input[type="text"],
+select,
+textarea {
+  width: 50%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  resize: vertical;
+  display: block;
+  margin: 0 auto;
+}
+.formcontainer {
+  width: 25%;
+  float: center;
+  background-color: #006400;
+  border-radius: 25px;
+}
+.querycontainer {
+  width: 85%;
+  float: center;
+  background-color: #006400;
+  border-radius: 25px;
+}
+.searchcontainer {
+  width: 80%;
+  margin: auto;
+  background-color: #008000;
+  border-radius: 25px;
+}
+.l1 {
+  display: block;
+  margin: 0 auto;
+}
+li {
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+select {
+  overflow: visible;
+}
+
+/* body items */
