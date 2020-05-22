@@ -112,4 +112,87 @@ select {
   overflow: visible;
 }
 
+/* body items */argin: 0 auto;
+}
+.journalentry-container {
+  display: flex;
+  background-color: #bfe0bf;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-content: space-around;
+}
+
+
+.journalentry-main {
+  flex-grow: 2;
+  margin-left: 15px;
+  margin-right: 5em;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+
+}
+
+.journalentry-side {
+  margin-left: 5em;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+}
+
+.journalentry-name {
+  max-width: 100%;
+}
+.leftcol {
+  margin-top: 50px;
+  width: 25%;
+  float:center;
+  position:absolute;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+ }
+ .second{
+  width: 25%;
+  float:center;
+  margin-top: 200px;
+  position:absolute;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+ }
+ .third{
+  width: 25%;
+  float:center;
+  margin-top: 350px;
+  position:absolute;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+ }
+ .rightcol {
+    margin-top: 50px;
+
+  width: 70%;
+  float:right;
+  background-color: #9CBA7F;
+  border-radius: 25px;
+  border-width: 15px;
+  border-style: solid;
+  border-color: #006400;
+}
+
+
 /* body items */
+
