@@ -5,6 +5,8 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import Recipe from "./Recipe";
 import Login from "./Login";
+import Collection from "./Collection";
+import Journal from "./Journal";
 
 const routing = (
   <Router>
@@ -12,6 +14,8 @@ const routing = (
       <Route exact path="/" component={App} />
       <Route exact path="/recipe" component={Recipe} />
       <Route exact path="/account" component={Login} />
+      <Route exact path="/collections" component={Collection} />
+      <Route exact path="/journal" component={Journal} />
     </div>
   </Router>
 );
