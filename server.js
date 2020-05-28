@@ -12,6 +12,7 @@ var pool = mysql.createPool({
   user: "cs340_jianglau",
   password: "6978",
   database: "cs340_jianglau",
+  multipleStatements: true,
 });
 
 app.engine("handlebars", handlebars.engine);
@@ -38,10 +39,12 @@ app.get("/home", function (req, res, next) {
 
 app.get("/recipe_search", function (req, res, next) {
   var sql =
-    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE '%search";
+    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE %" +
+    mysql.escape(req.body.search) +
+    "%";
   var context = {};
   var sqlRows = [];
-  pool.query("SELECT * FROM workouts", function (err, rows, fields) {
+  pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
       return;
@@ -52,10 +55,10 @@ app.get("/recipe_search", function (req, res, next) {
 
 app.get("/collections", function (req, res, next) {
   var sql =
-    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE '%search";
+    "SELECT Collection.name, Recipe.name FROM Collection JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id ORDER BY Recipe.name ASC";
   var context = {};
   var sqlRows = [];
-  pool.query("SELECT * FROM workouts", function (err, rows, fields) {
+  pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
       return;
@@ -65,11 +68,14 @@ app.get("/collections", function (req, res, next) {
 });
 
 app.get("/journal", function (req, res, next) {
+  var keyword = req.body.search;
   var sql =
-    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE '%search";
+    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE %" +
+    mysql.escape(req.body.search) +
+    "%";
   var context = {};
   var sqlRows = [];
-  pool.query("SELECT * FROM workouts", function (err, rows, fields) {
+  pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
       return;
