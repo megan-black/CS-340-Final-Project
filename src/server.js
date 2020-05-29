@@ -2,7 +2,9 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
 var mysql = require("./dbcon.js");
+var cookieParser = require("cookie-parser");
 
+app.use(cookieParser());
 port = 12349;
 
 app.set("port", port);
