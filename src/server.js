@@ -1,20 +1,20 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
+var cors = require("cors");
 var mysql = require("./dbcon.js");
 var cookieParser = require("cookie-parser");
 
-app.use(cookieParser());
 port = 12349;
-
 app.set("port", port);
-
+app.use(cookieParser());
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 
 app.get("/home", function (req, res, next) {
+  console.log("home query");
   var sql =
     "SELECT Collection.name, Recipe.name FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id ORDER BY Recipe.name ASC LIMIT 4";
   pool.query(sql, function (err, rows, fields) {

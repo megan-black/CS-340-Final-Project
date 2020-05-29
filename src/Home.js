@@ -14,12 +14,13 @@ const Home = () => {
       try {
         const requestUrl = `http://flip1.engr.oregonstate.edu:12349/home`;
         const res = await axios.get(requestUrl);
+        setResults(res);
         console.log(res);
       } catch (err) {
         console.log(err);
       }
     }
-  });
+  }, []);
 
   const createCards = () => {
     return results.map(
@@ -32,11 +33,6 @@ const Home = () => {
               bordered={true}
               style={{ marginLeft: "10px", marginRight: "10px" }}
             >
-              <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
-              <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
-              <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
-              <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
-              <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
               <Card.Grid style={{ width: "100%" }}>Card content</Card.Grid>
             </Card>
           </Col>
