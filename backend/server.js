@@ -1,33 +1,20 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
-var handlebars = require("express-handlebars").create({
-  defaultLayout: "main",
-});
-var mysql = require("mysql");
+var mysql = require("./dbcon.js");
 
-var pool = mysql.createPool({
-  connectionLimit: 10,
-  host: "classmysql.engr.oregonstate.edu",
-  user: "cs340_jianglau",
-  password: "6978",
-  database: "cs340_jianglau",
-  multipleStatements: true,
-});
+port = 12349;
 
-app.engine("handlebars", handlebars.engine);
-app.set("view engine", "handlebars");
-app.set("port", process.argv[2]);
+app.set("port", port);
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/home", function (req, res, next) {
   var sql =
     "SELECT Collection.name, Recipe.name FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id ORDER BY Recipe.name ASC LIMIT 4";
-  var context = {};
-  var sqlRows = [];
   pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
@@ -42,22 +29,18 @@ app.get("/recipe_search", function (req, res, next) {
     "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE %" +
     mysql.escape(req.body.search) +
     "%";
-  var context = {};
-  var sqlRows = [];
   pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
       return;
     }
-    res.render("home", context);
+    res.send(rows);
   });
 });
 
 app.get("/collections", function (req, res, next) {
   var sql =
     "SELECT Collection.name, Recipe.name FROM Collection JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id ORDER BY Recipe.name ASC";
-  var context = {};
-  var sqlRows = [];
   pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
@@ -68,6 +51,21 @@ app.get("/collections", function (req, res, next) {
 });
 
 app.get("/journal", function (req, res, next) {
+  var keyword = req.body.search;
+  var sql =
+    "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE %" +
+    mysql.escape(req.body.search) +
+    "%";
+  pool.query(sql, function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.render("home", context);
+  });
+});
+
+app.get("/journal_entries", function (req, res, next) {
   var keyword = req.body.search;
   var sql =
     "SELECT name, cook_time, category, Recipe_ingredients.ingredients FROM Recipe JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE %" +
@@ -84,7 +82,32 @@ app.get("/journal", function (req, res, next) {
   });
 });
 
-app.post("/", function (req, res, next) {
+app.post("/register_user", function (req, res, next) {
+  pool.query("INSERT INTO Users WHERE", [req.body.id], function (err, result) {
+    if (err) {
+      console.log("ERROR IN DELETE");
+      next(err);
+      return;
+    }
+    res.send({ message: "deleting..." });
+  });
+});
+
+app.post("/auth_user", function (req, res, next) {
+  pool.query("DELETE FROM Journal WHERE id=?", [req.body.id], function (
+    err,
+    result
+  ) {
+    if (err) {
+      console.log("ERROR IN DELETE");
+      next(err);
+      return;
+    }
+    res.send({ message: "deleting..." });
+  });
+});
+
+app.post("/new_recipe", function (req, res, next) {
   console.log("REQUEST PASSED", req.body);
   var context = {};
   pool.query(
@@ -107,40 +130,7 @@ app.post("/", function (req, res, next) {
   res.render("home", context);
 });
 
-app.post("/delete", function (req, res, next) {
-  console.log("DELETE", req.body);
-  pool.query("DELETE FROM workouts WHERE id=?", [req.body.id], function (
-    err,
-    result
-  ) {
-    if (err) {
-      console.log("ERROR IN DELETE");
-      next(err);
-      return;
-    }
-    res.send({ message: "deleting..." });
-  });
-});
-
-app.get("/reset-table", function (req, res, next) {
-  var context = {};
-  pool.query("DROP TABLE IF EXISTS workouts", function (err) {
-    var createString =
-      "CREATE TABLE workouts(" +
-      "id INT PRIMARY KEY AUTO_INCREMENT," +
-      "name VARCHAR(255) NOT NULL," +
-      "reps INT," +
-      "weight INT," +
-      "date DATE," +
-      "lbs BOOLEAN)";
-    pool.query(createString, function (err) {
-      context.results = "Table reset";
-      res.render("home", context);
-    });
-  });
-});
-
-app.post("/update", function (req, res, next) {
+app.post("/new_entry", function (req, res, next) {
   console.log("IN UPDATE FX", req.body.payload);
   var context = {};
   pool.query(
@@ -163,6 +153,21 @@ app.post("/update", function (req, res, next) {
     }
   );
   res.send({ message: context.results });
+});
+
+app.post("/delete_journal", function (req, res, next) {
+  console.log("DELETE", req.body);
+  pool.query("DELETE FROM Journal WHERE id=?", [req.body.id], function (
+    err,
+    result
+  ) {
+    if (err) {
+      console.log("ERROR IN DELETE");
+      next(err);
+      return;
+    }
+    res.send({ message: "deleting..." });
+  });
 });
 
 app.use(function (req, res) {
