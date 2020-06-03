@@ -25,13 +25,12 @@ app.get("/", function (req, res, next) {
 app.get("/home", function (req, res, next) {
   console.log("home query");
   var sql =
-    "SELECT * FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Contains.recipe_id = Recipe.recipe_id WHERE Collection.collection_id = Contains.collection_id LIMIT 4;";
+    "SELECT Collection.name as c_name, Recipe.name as r_name, category, cook_time, date_created FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Contains.recipe_id = Recipe.recipe_id WHERE Collection.collection_id = Contains.collection_id LIMIT 4;";
   pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
       return;
     }
-    console.log("home query!!");
     res.send(rows);
   });
 });
@@ -88,6 +87,7 @@ app.get("/journal", function (req, res, next) {
 // user authorization / creation
 
 app.post("/register_user", function (req, res, next) {
+  console.log(req.body);
   pool.query(
     "INSERT INTO Users (num_recipes, username, password, display_name, num_collections) VALUES (?, ?, ?, ?, ?)",
     [0, req.body.username, req.body.password, req.body.display_name, 0],
@@ -105,7 +105,6 @@ app.get("/auth_user", function (req, res, next) {
   const options = {
     maxAge: 60 * 60 * 1000, // 1 hour
     httpOnly: true,
-    secure: true,
     sameSite: true,
   };
 
@@ -117,7 +116,6 @@ app.get("/auth_user", function (req, res, next) {
     [req.body.username, req.body.password],
     function (err, result) {
       if (err) {
-        console.log("ERROR IN DELETE");
         next(err);
         return;
       }
@@ -128,7 +126,11 @@ app.get("/auth_user", function (req, res, next) {
   );
 });
 
-app.get("/clear-cookie", (req, res) => {
+app.get("/read_cookie", (req, res) => {
+  res.send(req.signedCookies.name);
+});
+
+app.get("/clear_cookie", (req, res) => {
   res.clearCookie("name").end();
 });
 
@@ -162,19 +164,12 @@ app.post("/recipe_ingredients", function (req, res, next) {
   res.sendStatus(200);
 });
 
-// creating a new collection
+// updating a recipe
 
-app.post("/new_collection", function (req, res, next) {
+app.post("/update_recipe", function (req, res, next) {
   pool.query(
-    "UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=? ",
-    [
-      req.body.payload.name,
-      req.body.payload.reps,
-      req.body.payload.weight,
-      req.body.payload.date,
-      req.body.payload.unit,
-      req.body.payload.id,
-    ],
+    "UPDATE Recipe SET ingredients=? WHERE recipe_id=?",
+    [req.body.ingredients, req.body.recipe_id],
     function (err, result) {
       if (err) {
         next(err);
@@ -182,12 +177,63 @@ app.post("/new_collection", function (req, res, next) {
       }
     }
   );
-  res.send({ message: context.results });
+  res.sendStatus(200);
+
+  pool.query(
+    "UPDATE Recipe_ingredients SET ingredients=? WHERE recipe_id=?",
+    [req.body.ingredients, req.body.recipe_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+    }
+  );
+  res.sendStatus(200);
+});
+
+// creating a new collection
+
+app.post("/new_collection", function (req, res, next) {
+  pool.query(
+    "INSERT INTO Collection (type, name, date_created, user_id) VALUES (?, ?, ?, ?)",
+    [req.body.type, req.body.name, CURDATE(), req.body.user_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+    }
+  );
+
+  pool.query(
+    "INSERT INTO Contains (collection_id, recipe_id) VALUES (?, ?)",
+    [req.body.collection_id, req.body.recipe_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+    }
+  );
+  res.send({ message: "success!" });
 });
 
 // deleting a collection
 
 app.post("/delete_collection", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Contains WHERE collection_id=?",
+    [req.body.collection_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send({ message: "deleting..." });
+    }
+  );
+
   pool.query(
     "DELETE FROM Collection WHERE collection_id=?",
     [req.body.collection_id],
@@ -204,6 +250,30 @@ app.post("/delete_collection", function (req, res, next) {
 // deleting a journal
 
 app.post("/delete_journal", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Entry_food_eaten WHERE entry_id = (SELECT entry_id from Entry WHERE journal_id=(SELECT journal_id FROM Journal WHERE user_id=?))",
+    [req.body.id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send({ message: "deleting entries..." });
+    }
+  );
+
+  pool.query(
+    "DELETE FROM Entry WHERE journal_id=(SELECT journal_id FROM Journal WHERE user_id=?)",
+    [req.body.id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send({ message: "deleting entries..." });
+    }
+  );
+
   pool.query("DELETE FROM Journal WHERE user_id=?", [req.body.id], function (
     err,
     result
@@ -212,7 +282,7 @@ app.post("/delete_journal", function (req, res, next) {
       next(err);
       return;
     }
-    res.send({ message: "deleting..." });
+    res.send({ message: "deleting journal..." });
   });
 });
 

@@ -1,33 +1,39 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import axios from "axios";
-import { Layout, PageHeader, Input, Button } from "antd";
+import { Layout, PageHeader, Input, Button, Alert } from "antd";
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 
-const Login = () => {
-  async function loginUser() {
+const SignUp = () => {
+  const [results, setResults] = useState();
+  const [isLoaded, setLoaded] = useState(false);
+
+  async function postUser() {
     try {
-      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/auth_user`;
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/register_user`;
       const res = await axios.post(requestUrl, {
         username: document.getElementById("username").value,
         password: document.getElementById("password").value,
+        display_name: document.getElementById("displayName").value,
       });
-      alert("You have been logged in!");
-      document.location.href = "/";
+      setResults(res.data);
+      alert("You have been registered!");
+      document.location.href = "/account";
     } catch (err) {
       console.log(err);
-      alert("Something went wrong with your login. Try again.");
+      alert("Something went wrong with your registration. Try again.");
     }
   }
 
   const checkValid = () => {
     if (
       !document.getElementById("username").value ||
-      !document.getElementById("password").value
+      !document.getElementById("password").value ||
+      !document.getElementById("displayName").value
     ) {
       alert("Error! Some fields are empty!");
     } else {
-      loginUser();
+      postUser();
     }
   };
 
@@ -36,7 +42,7 @@ const Login = () => {
       <Nav />
       <div align="center" display="flex" style={{ justifyContent: "center" }}>
         <Layout style={{ alignItems: "center" }}>
-          <PageHeader title="Login" />
+          <PageHeader title="Register" />
           <div display="flex" style={{ flexDirection: "row" }}></div>
           <br />
 
@@ -47,6 +53,11 @@ const Login = () => {
               prefix={<UserOutlined className="site-form-item-icon" />}
               style={{ marginBottom: "15px" }}
             />
+            <Input
+              id="displayName"
+              placeholder="Enter your display name..."
+              style={{ marginBottom: "15px" }}
+            />
             <Input.Password
               id="password"
               placeholder="Enter your password..."
@@ -55,11 +66,12 @@ const Login = () => {
           </div>
 
           <div>
-            <Button type="primary" style={{ margin: "10px" }}>
-              <a href="/signup">Sign Up</a>
-            </Button>
-            <Button type="primary" onClick={checkValid}>
-              Login
+            <Button
+              type="primary"
+              style={{ margin: "10px" }}
+              onClick={checkValid}
+            >
+              Register
             </Button>
           </div>
 
@@ -71,4 +83,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

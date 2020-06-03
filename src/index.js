@@ -7,6 +7,7 @@ import Recipe from "./Recipe";
 import Login from "./Login";
 import Collection from "./Collection";
 import Journal from "./Journal";
+import SignUp from "./SignUp";
 
 const routing = (
   <Router>
@@ -16,6 +17,7 @@ const routing = (
       <Route exact path="/account" component={Login} />
       <Route exact path="/collections" component={Collection} />
       <Route exact path="/journal" component={Journal} />
+      <Route exact path="/signup" component={SignUp} />
     </div>
   </Router>
 );

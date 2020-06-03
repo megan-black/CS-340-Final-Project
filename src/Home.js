@@ -4,18 +4,21 @@ import { Layout } from "antd";
 import { Row, Col } from "antd";
 import { PageHeader } from "antd";
 import { Card } from "antd";
+import { Spin } from "antd";
 
 const Home = () => {
   const [results, setResults] = useState();
-  const [err, setErr] = useState(false);
+  const [isLoaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function fetchHome() {
       try {
-        const requestUrl = `http://flip1.engr.oregonstate.edu:12349/home`;
+        setLoaded(false);
+        const requestUrl = `http://flip2.engr.oregonstate.edu:56334/home`;
         const res = await axios.get(requestUrl);
-        console.log(res);
-        setResults(res);
+        console.log(res.data);
+        setResults(res.data);
+        setLoaded(true);
       } catch (err) {
         console.log(err);
       }
@@ -26,16 +29,20 @@ const Home = () => {
 
   const createCards = () => {
     return results.map(
-      (results.data,
+      (results,
       (index) => {
         return (
           <Col span={6}>
             <Card
-              title="Collection Title"
+              title={index.c_name}
               bordered={true}
               style={{ marginLeft: "10px", marginRight: "10px" }}
             >
-              <Card.Grid style={{ width: "100%" }}>{results.data}</Card.Grid>
+              <b>Date Created:</b> {index.date_created.substring(0, 10)}
+              <Card.Grid style={{ width: "100%" }}>
+                <h4>Included Recipes</h4>
+                <b>{index.r_name}</b> <br /> Cook Time: {index.cook_time}
+              </Card.Grid>
             </Card>
           </Col>
         );
@@ -44,14 +51,20 @@ const Home = () => {
   };
 
   return (
-    <div align="center" display="flex" style={{ justifyContent: "center" }}>
-      <Layout style={{ alignItems: "center" }}>
-        <PageHeader title="Log your food, create collections, and view user-curated recipes!" />
-      </Layout>
-      <br />
-      <h2>Today's Featured Collections</h2>
-      <br />
-      <Row>{createCards}</Row>
+    <div>
+      {isLoaded === true ? (
+        <div align="center" display="flex" style={{ justifyContent: "center" }}>
+          <Layout style={{ alignItems: "center" }}>
+            <PageHeader title="Log your food, create collections, and view user-curated recipes!" />
+          </Layout>
+          <br />
+          <h2>Today's Featured Collections</h2>
+          <br />
+          <Row>{createCards()}</Row>
+        </div>
+      ) : (
+        <Spin />
+      )}
     </div>
   );
 };
