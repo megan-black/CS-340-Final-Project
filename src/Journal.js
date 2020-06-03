@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Nav from "./Nav";
+import axios from "axios";
 import {
   Layout,
   PageHeader,
@@ -12,13 +13,43 @@ import {
 } from "antd";
 
 const Journal = () => {
-  async function deleteJournal() {
+  const [res, setRes] = useState();
+
+  async function readEntries() {
     try {
+      const fetchCookie = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
+      const resCookie = axios.get(fetchCookie);
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/journal`;
+      const res = axios.post(requestUrl, {
+        user_id: resCookie,
+      });
+      setRes(res.data);
     } catch (err) {
       console.log(err);
       alert("An error occurred!");
     }
   }
+
+  async function deleteJournal() {
+    try {
+      const fetchCookie = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
+      const resCookie = axios.get(fetchCookie);
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/delete_journal`;
+      const res = axios.post(requestUrl, {
+        user_id: resCookie,
+      });
+      console.log("Your entire journal has been deleted!");
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred!");
+    }
+  }
+
+  const createEntryCards = () => {};
+
+  const addEntry = () => {};
+
+  const editEntry = () => {};
 
   return (
     <div>

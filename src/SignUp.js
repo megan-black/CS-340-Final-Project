@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Nav from "./Nav";
 import axios from "axios";
-import { Layout, PageHeader, Input, Button, Alert } from "antd";
-import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout, PageHeader, Input, Button } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
-  const [results, setResults] = useState();
-  const [isLoaded, setLoaded] = useState(false);
-
   async function postUser() {
     try {
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/register_user`;
@@ -16,7 +13,7 @@ const SignUp = () => {
         password: document.getElementById("password").value,
         display_name: document.getElementById("displayName").value,
       });
-      setResults(res.data);
+      console.log(res);
       alert("You have been registered!");
       document.location.href = "/account";
     } catch (err) {

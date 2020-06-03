@@ -2,17 +2,25 @@ import React from "react";
 import Nav from "./Nav";
 import axios from "axios";
 import { Layout, PageHeader, Input, Button } from "antd";
-import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 
 const Login = () => {
   async function loginUser() {
     try {
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/auth_user`;
+      console.log(document.getElementById("username").value);
+      console.log(document.getElementById("password").value);
       const res = await axios.post(requestUrl, {
         username: document.getElementById("username").value,
         password: document.getElementById("password").value,
       });
+      console.log(res);
+      if (!res) {
+        alert("Invalid credentials!");
+        return;
+      }
       alert("You have been logged in!");
+      sessionStorage.setItem("id", res.data.id);
       document.location.href = "/";
     } catch (err) {
       console.log(err);

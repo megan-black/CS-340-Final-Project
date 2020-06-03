@@ -1,47 +1,96 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, Button } from "antd";
+import axios from "axios";
 
-const items = [
-  {
-    label: "Recipes",
-    href: "/recipe",
-  },
-  {
-    label: "Collections",
-    href: "/collections",
-  },
-  {
-    label: "Journal",
-    href: "/journal",
-  },
-];
+const Nav = () => {
+  const [cookie, setCookie] = useState();
 
-const Nav = () => (
-  <Menu
-    mode="horizontal"
-    style={{
-      display: "flex",
-      alignContent: "center",
-      justifyContent: "space-between",
-      alignItems: "center",
-    }}
-  >
-    <Menu.Item>
-      <a href="/">
-        <h1>Recipe Builder</h1>
-      </a>
-    </Menu.Item>
-    {items.map((item) => (
-      <Menu.Item key={item.label}>
-        <a href={item.href}>
-          <h3>{item.label}</h3>
+  async function readCookie() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
+      const res = await axios.get(requestUrl);
+      console.log(sessionStorage.getItem("id"));
+      setCookie(sessionStorage.getItem("id"));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function clearCookie() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/clear_cookie`;
+      const res = await axios.get(requestUrl);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const signOut = () => {
+    sessionStorage.setItem("id", -1);
+    setCookie(sessionStorage.getItem("id"));
+    clearCookie();
+  };
+
+  useEffect(() => {
+    readCookie();
+  }, []);
+
+  const items = [
+    {
+      label: "Recipes",
+      href: "/recipe",
+    },
+    {
+      label: "Collections",
+      href: "/collections",
+    },
+    {
+      label: "Journal",
+      href: "/journal",
+    },
+  ];
+
+  return (
+    <Menu
+      mode="horizontal"
+      style={{
+        display: "flex",
+        alignContent: "center",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      <Menu.Item>
+        <a href="/">
+          <h1>Recipe Builder</h1>
         </a>
       </Menu.Item>
-    ))}
-    <Menu.Item>
-      <Button href="/account">Account</Button>
-    </Menu.Item>
-  </Menu>
-);
+      {items.map((item) => (
+        <Menu.Item key={item.label}>
+          {cookie > -1 ? (
+            <a href={item.href}>
+              <h3>{item.label}</h3>
+            </a>
+          ) : (
+            <div>
+              <a href="/">
+                <h3>{item.label}</h3>
+              </a>
+            </div>
+          )}
+        </Menu.Item>
+      ))}
+      <Menu.Item>
+        {cookie > -1 ? (
+          <Button href="/account" onClick={signOut}>
+            Sign Out
+          </Button>
+        ) : (
+          <Button href="/account">Log In</Button>
+        )}
+      </Menu.Item>
+    </Menu>
+  );
+};
 
 export default Nav;

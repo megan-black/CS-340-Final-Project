@@ -57,8 +57,8 @@ app.get("/recipe_search", function (req, res, next) {
 
 app.get("/collections", function (req, res, next) {
   var sql =
-    "SELECT * FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=8 ORDER BY Collection.name ASC";
-  pool.query(sql, function (err, rows, fields) {
+    "SELECT * FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
+  pool.query(sql, [req.body.id], function (err, rows, fields) {
     if (err) {
       next(err);
       return;
@@ -70,18 +70,17 @@ app.get("/collections", function (req, res, next) {
 // get journal
 
 app.get("/journal", function (req, res, next) {
-  var keyword = req.body.search;
-  var sql =
-    "SELECT * FROM Journal JOIN Entry ON Entry.journal_id = Journal.journal_id JOIN Entry_food_eaten ON Entry.entry_id = Entry_food_eaten.entry_id LEFT JOIN Users on User.user_id = Journal.user_id WHERE user_id = 2 ORDER BY date_made" +
-    mysql.escape(req.body.search) +
-    "%";
-  pool.query(sql, function (err, rows, fields) {
-    if (err) {
-      next(err);
-      return;
+  pool.query(
+    "SELECT * FROM Journal JOIN Entry ON Entry.journal_id = Journal.journal_id JOIN Entry_food_eaten ON Entry.entry_id = Entry_food_eaten.entry_id LEFT JOIN Users on Users.user_id = Journal.user_id WHERE Users.user_id=? ORDER BY date_made",
+    [req.body.user_id],
+    function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send(rows);
     }
-    res.send(rows);
-  });
+  );
 });
 
 // user authorization / creation
@@ -101,15 +100,13 @@ app.post("/register_user", function (req, res, next) {
   );
 });
 
-app.get("/auth_user", function (req, res, next) {
+app.post("/auth_user", function (req, res, next) {
   const options = {
     maxAge: 60 * 60 * 1000, // 1 hour
-    httpOnly: true,
-    sameSite: true,
   };
 
-  req.body.username = "test";
-  req.body.password = "test";
+  // req.body.username = "test";
+  // req.body.password = "test";
 
   pool.query(
     "SELECT * FROM Users WHERE username=? AND password=?",
@@ -121,7 +118,9 @@ app.get("/auth_user", function (req, res, next) {
       }
       console.log(result[0].user_id);
       var id = result[0].user_id;
-      res.cookie("name", id, options).send({ screen: "user" });
+
+      res.set({ withCredentials: "true" });
+      res.cookie("name", id, options).send({ screen: "user", id: id });
     }
   );
 });
@@ -206,6 +205,9 @@ app.post("/new_collection", function (req, res, next) {
     }
   );
 
+});
+
+app.post("/insert_contains", function (req, res, next) {
   pool.query(
     "INSERT INTO Contains (collection_id, recipe_id) VALUES (?, ?)",
     [req.body.collection_id, req.body.recipe_id],
@@ -217,7 +219,6 @@ app.post("/new_collection", function (req, res, next) {
     }
   );
   res.send({ message: "success!" });
-});
 
 // deleting a collection
 
@@ -230,19 +231,19 @@ app.post("/delete_collection", function (req, res, next) {
         next(err);
         return;
       }
-      res.send({ message: "deleting..." });
+      res.send({ message: "deleting contains..." });
     }
   );
 
   pool.query(
-    "DELETE FROM Collection WHERE collection_id=?",
-    [req.body.collection_id],
+    "DELETE FROM Collection WHERE collection_id=? AND user_id=?",
+    [req.body.collection_id, req.body.user_id],
     function (err, result) {
       if (err) {
         next(err);
         return;
       }
-      res.send({ message: "deleting..." });
+      res.send({ message: "deleting collection..." });
     }
   );
 });
@@ -252,7 +253,7 @@ app.post("/delete_collection", function (req, res, next) {
 app.post("/delete_journal", function (req, res, next) {
   pool.query(
     "DELETE FROM Entry_food_eaten WHERE entry_id = (SELECT entry_id from Entry WHERE journal_id=(SELECT journal_id FROM Journal WHERE user_id=?))",
-    [req.body.id],
+    [req.body.user_id],
     function (err, result) {
       if (err) {
         next(err);
@@ -264,7 +265,7 @@ app.post("/delete_journal", function (req, res, next) {
 
   pool.query(
     "DELETE FROM Entry WHERE journal_id=(SELECT journal_id FROM Journal WHERE user_id=?)",
-    [req.body.id],
+    [req.body.user_id],
     function (err, result) {
       if (err) {
         next(err);
@@ -274,16 +275,17 @@ app.post("/delete_journal", function (req, res, next) {
     }
   );
 
-  pool.query("DELETE FROM Journal WHERE user_id=?", [req.body.id], function (
-    err,
-    result
-  ) {
-    if (err) {
-      next(err);
-      return;
+  pool.query(
+    "DELETE FROM Journal WHERE user_id=?",
+    [req.body.user_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send({ message: "deleting journal..." });
     }
-    res.send({ message: "deleting journal..." });
-  });
+  );
 });
 
 app.use(function (req, res) {
