@@ -25,7 +25,7 @@ app.get("/", function (req, res, next) {
 app.get("/home", function (req, res, next) {
   console.log("home query");
   var sql =
-    "SELECT Collection.name as c_name, Recipe.name as r_name, category, cook_time, date_created FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Contains.recipe_id = Recipe.recipe_id WHERE Collection.collection_id = Contains.collection_id LIMIT 4;";
+    "SELECT Collection.name as c_name, Recipe.name as r_name, category, cook_time, date_created, * FROM Collection JOIN Contains ON Collection.collection_id = Contains.collection_id JOIN Recipe ON Contains.recipe_id = Recipe.recipe_id WHERE Collection.collection_id = Contains.collection_id LIMIT 4;";
   pool.query(sql, function (err, rows, fields) {
     if (err) {
       next(err);
@@ -57,7 +57,7 @@ app.get("/recipe_search", function (req, res, next) {
 
 app.get("/collections", function (req, res, next) {
   var sql =
-    "SELECT * FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
+    "SELECT Collection.name as c_name, Recipe.name as r_name, * FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
   pool.query(sql, [req.body.id], function (err, rows, fields) {
     if (err) {
       next(err);
@@ -246,7 +246,37 @@ app.post("/delete_collection", function (req, res, next) {
       res.send({ message: "deleting collection..." });
     }
   );
-});
+}); 
+
+// create a new journal 
+
+app.post("/create_journal", function (req, res, next) {
+  pool.query(
+    "INSERT INTO Journal (date_created, title, num_entries, user_id) VALUES (?, ?, ?)",
+    [CURDATE(), req.body.title, 0, req.body.user_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+})
+
+app.post("/create_journal", function (req, res, next) {
+  pool.query(
+    "INSERT INTO Journal (date_created, title, num_entries, user_id) VALUES (?, ?, ?)",
+    [CURDATE(), req.body.title, 0, req.body.user_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+})
 
 // deleting a journal
 

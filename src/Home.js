@@ -28,9 +28,11 @@ const Home = () => {
   }, []);
 
   const createCards = () => {
+    const seenArr = [];
     return results.map(
       (results,
       (index) => {
+        console.log(seenArr);
         return (
           <Col span={6}>
             <Card
@@ -38,6 +40,8 @@ const Home = () => {
               bordered={true}
               style={{ marginLeft: "10px", marginRight: "10px" }}
             >
+              Category: {index.category}
+              <br />
               <b>Date Created:</b> {index.date_created.substring(0, 10)}
               <Card.Grid style={{ width: "100%" }}>
                 <h4>Included Recipes</h4>

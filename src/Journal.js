@@ -1,27 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import axios from "axios";
-import {
-  Layout,
-  PageHeader,
-  Input,
-  Button,
-  Empty,
-  Tooltip,
-  Comment,
-  Avatar,
-} from "antd";
+import { Layout, PageHeader, Button, Empty, Card } from "antd";
 
 const Journal = () => {
-  const [res, setRes] = useState();
+  const [hasJournal, setJournalStatus] = useState(false);
+  const [journalRes, setJournalRes] = useState();
+  const [results, setRes] = useState();
+
+  async function createJournal() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/create_journal`;
+      const res = axios.post(requestUrl, {
+        user_id: sessionStorage.getItem("id"),
+      });
+      setRes(res.data);
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred!");
+    }
+  }
+
+  async function checkStatus() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/journal`;
+      const res = axios.post(requestUrl, {
+        user_id: sessionStorage.getItem("id"),
+      });
+      if (res.data) setJournalRes(res.data);
+      else setJournalStatus(false);
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred!");
+    }
+  }
+
+  async function createEntry() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/create_entry`;
+      const res = axios.post(requestUrl, {
+        user_id: sessionStorage.getItem("id"),
+      });
+      setRes(res.data);
+    } catch (err) {
+      console.log(err);
+      alert("An error occurred!");
+    }
+  }
 
   async function readEntries() {
     try {
-      const fetchCookie = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
-      const resCookie = axios.get(fetchCookie);
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/journal`;
       const res = axios.post(requestUrl, {
-        user_id: resCookie,
+        user_id: sessionStorage.getItem("id"),
       });
       setRes(res.data);
     } catch (err) {
@@ -32,13 +63,11 @@ const Journal = () => {
 
   async function deleteJournal() {
     try {
-      const fetchCookie = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
-      const resCookie = axios.get(fetchCookie);
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/delete_journal`;
       const res = axios.post(requestUrl, {
-        user_id: resCookie,
+        user_id: sessionStorage.getItem("id"),
       });
-      console.log("Your entire journal has been deleted!");
+      alert("Your entire journal has been deleted!");
     } catch (err) {
       console.log(err);
       alert("An error occurred!");
@@ -51,6 +80,15 @@ const Journal = () => {
 
   const editEntry = () => {};
 
+  useEffect(() => {
+    checkStatus();
+    setJournalRes({
+      title: "Test",
+      date_created: "test",
+      num_entries: "test",
+    });
+  }, []);
+
   return (
     <div>
       <Nav />
@@ -58,25 +96,40 @@ const Journal = () => {
         <Layout style={{ alignItems: "center" }}>
           <PageHeader title="Journal" />
         </Layout>
-        <Button type="primary" style={{ margin: "10px" }}>
-          Create Entry
-        </Button>
-        <Button type="primary" style={{ margin: "10px" }}>
-          Delete Journal
-        </Button>
-        <Comment
-          author={<a>Han Solo</a>}
-          avatar={
-            <Avatar
-              src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
-              alt="Han Solo"
-            />
-          }
-          content={
-            <p>This is a sample journal entry for this particular user.</p>
-          }
-          style={{ maxWidth: "75%", borderStyle: "solid", borderWidth: "1px" }}
-        />
+        {hasJournal ? (
+          <Button type="primary" style={{ margin: "10px" }}>
+            Create Entry
+          </Button>
+        ) : (
+          <Button type="disabled" style={{ margin: "10px" }}>
+            Create Entry
+          </Button>
+        )}
+        {hasJournal ? (
+          <Button
+            type="primary"
+            style={{ margin: "10px" }}
+            onClick={deleteJournal}
+          >
+            Delete Journal
+          </Button>
+        ) : (
+          <Button
+            type="primary"
+            style={{ margin: "10px" }}
+            onClick={createJournal}
+          >
+            Create Journal
+          </Button>
+        )}
+
+        {hasJournal ? (
+          <Card title="test" style={{ width: 300 }}>
+            <p>Date Created: </p>
+          </Card>
+        ) : (
+          <Empty />
+        )}
         <br />
       </div>
     </div>

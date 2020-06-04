@@ -68,8 +68,8 @@ const Collection = () => {
       (index) => {
         return (
           <List
-            size="large"
             style={{
+              maxWidth: "50%",
               border: "solid",
               borderWidth: "2px",
               marginBottom: "10px",
