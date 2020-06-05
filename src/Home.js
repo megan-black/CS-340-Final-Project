@@ -28,11 +28,9 @@ const Home = () => {
   }, []);
 
   const createCards = () => {
-    const seenArr = [];
     return results.map(
       (results,
       (index) => {
-        console.log(seenArr);
         return (
           <Col span={6}>
             <Card

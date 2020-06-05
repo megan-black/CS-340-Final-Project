@@ -7,8 +7,6 @@ const Nav = () => {
 
   async function readCookie() {
     try {
-      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/read_cookie`;
-      const res = await axios.get(requestUrl);
       console.log(sessionStorage.getItem("id"));
       setCookie(sessionStorage.getItem("id"));
     } catch (err) {
@@ -19,7 +17,7 @@ const Nav = () => {
   async function clearCookie() {
     try {
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/clear_cookie`;
-      const res = await axios.get(requestUrl);
+      await axios.get(requestUrl);
     } catch (err) {
       console.log(err);
     }
