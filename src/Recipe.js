@@ -15,28 +15,43 @@ import {
   EditOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
-  MinusCircleOutlined,
 } from "@ant-design/icons";
 import RecipeSearch from "./RecipeSearch";
 const { Option } = Select;
 
 const Recipe = () => {
+  const [collections, setCollection] = useState();
   const [runSearch, setSearch] = useState(false);
   const [recipes, setRecipes] = useState();
   const [hasEdit, setEdit] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedCollection, setSelectedCollection] = useState();
+
+  async function getCollection() {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/collections`;
+      const res = await axios.post(requestUrl, {
+        id: sessionStorage.getItem("id"),
+      });
+      console.log(res.data);
+      setCollection(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   async function addRecipe() {
     try {
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/new_recipe`;
       const res = await axios.post(requestUrl, {
         cook_time: document.getElementById("cook_time").value,
-        category: document.getElementById("category").value,
+        category: selectedCategory,
         user_id: sessionStorage.getItem("id"),
         name: document.getElementById("name").value,
       });
       console.log(res);
       const addUrl = `http://flip2.engr.oregonstate.edu:56334/add_recipe_ingredients`;
-      const res2 = await axios.post(addUrl, {
+      await axios.post(addUrl, {
         ingredients: document.getElementById("ingredients").value,
       });
     } catch (err) {
@@ -72,30 +87,16 @@ const Recipe = () => {
     }
   }
 
-  async function addRecipeToCollection(r_id, ing) {
+  async function addRecipeToCollection(r_id) {
     try {
+      console.log(r_id, selectedCollection);
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/add_contains`;
       const res = await axios.post(requestUrl, {
         recipe_id: r_id,
-        ingredients: ing,
+        collection_id: selectedCollection,
       });
       console.log(res);
-      setRecipes(res.data);
-    } catch (err) {
-      console.log(err);
-      alert("An error occured!");
-    }
-  }
-
-  async function removeRecipeFromCollection(r_id, c_id) {
-    try {
-      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/remove_contains`;
-      const res = await axios.post(requestUrl, {
-        recipe_id: r_id,
-        collection_id: c_id,
-      });
-      console.log(res);
-      setRecipes(res.data);
+      alert("Successfully added!");
     } catch (err) {
       console.log(err);
       alert("An error occured!");
@@ -104,8 +105,12 @@ const Recipe = () => {
 
   async function deleteRecipe(r_id) {
     try {
+      const request = `http://flip2.engr.oregonstate.edu:56334/delete_ingredients`;
+      await axios.post(request, {
+        recipe_id: r_id,
+      });
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/delete_recipe`;
-      await axios.get(requestUrl, {
+      await axios.post(requestUrl, {
         recipe_id: r_id,
       });
       alert("Recipe deleted!");
@@ -131,12 +136,38 @@ const Recipe = () => {
     setSearch(true);
   };
 
-  const addToCollection = (e) => {
-    const recipe_id = e.currentTarget.id;
+  const renderSelectCollection = () => {
+    const children = [];
+
+    if (collections && collections.length > 0) {
+      for (let i = 0; i < collections.length; i++) {
+        children.push(
+          <Option
+            value={collections[i].collection_id}
+            key={collections[i].collection_id}
+          >
+            {collections[i].c_name}
+          </Option>
+        );
+      }
+    } else {
+      children.push(
+        <Option key="n/a" value="No collections available" disabled>
+          No collections available
+        </Option>
+      );
+    }
+
+    return (
+      <Select style={{ width: "250px" }} placeholder="Select a collection">
+        {children}
+      </Select>
+    );
   };
 
   useEffect(() => {
     fetchRecipes();
+    getCollection();
   }, []);
 
   const createAllRecipes = () => {
@@ -167,11 +198,24 @@ const Recipe = () => {
                   key="delete"
                   onClick={(e) => deleteRecipe(e.currentTarget.id)}
                 />,
-                <PlusCircleOutlined
-                  id={index.recipe_id + 1}
-                  key="add"
-                  // onClick={test}
-                />,
+                <Popconfirm
+                  placement="bottom"
+                  title={
+                    <div>
+                      Which collection(s) would you like to add to?
+                      <br />
+                      {renderSelectCollection()}
+                    </div>
+                  }
+                  onChange={(value) => {
+                    setSelectedCollection(`${value}`);
+                  }}
+                  onConfirm={(e) => addRecipeToCollection(e.currentTarget.id)}
+                  okText="Confirm"
+                  cancelText="Cancel"
+                >
+                  <PlusCircleOutlined id={index.recipe_id + 1} key="add" />
+                </Popconfirm>,
               ]}
             >
               Category: {index.category}
@@ -224,7 +268,7 @@ const Recipe = () => {
                 <div>
                   Recipe name?
                   <br />
-                  <input id="recipe_name" type="text" />
+                  <input id="name" type="text" />
                   <br />
                   Cook time?
                   <br />
@@ -236,17 +280,20 @@ const Recipe = () => {
                     id="category"
                     defaultValue="Breakfast"
                     style={{ width: 120 }}
+                    onChange={(value) => {
+                      setSelectedCategory(`${value}`);
+                    }}
                   >
-                    <Option value="breakfast">Breakfast</Option>
-                    <Option value="lunch">Lunch</Option>
-                    <Option value="dinner">Dinner</Option>
-                    <Option value="snack">Snack</Option>
-                    <Option value="dessert">Dessert</Option>
+                    <Option value="Breakfast">Breakfast</Option>
+                    <Option value="Lunch">Lunch</Option>
+                    <Option value="Dinner">Dinner</Option>
+                    <Option value="Snack">Snack</Option>
+                    <Option value="Dessert">Dessert</Option>
                   </Select>
                   <br />
                   Ingredients?
                   <br />
-                  <input id="ingredient" type="text" />
+                  <input id="ingredients" type="text" />
                 </div>
               }
               onConfirm={addRecipe}

@@ -112,6 +112,7 @@ const Journal = () => {
 
   const handleKeyPress = (e, e_id, f_id) => {
     if (e.which === 13) {
+      console.log("key pressed");
       updateEntry(e_id, f_id);
     }
   };

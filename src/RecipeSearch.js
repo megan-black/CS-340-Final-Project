@@ -20,6 +20,8 @@ const RecipeSearch = ({ query }) => {
     }
   }
 
+  const addToCollection = () => {};
+
   const renderCards = () => {
     var recipeNo = 0;
     if (recipes && recipes.length > 0) {
@@ -29,7 +31,6 @@ const RecipeSearch = ({ query }) => {
           if (index.ingredients === null)
             index.ingredients = " Not filled in by user.";
           recipeNo += 1;
-          var placeholder = index.ingredients;
           return (
             <Card
               key={index.name}

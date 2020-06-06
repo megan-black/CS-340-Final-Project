@@ -61,6 +61,21 @@ const Collection = () => {
     }
   }
 
+  async function removeRecipeFromCollection(r_id, c_id) {
+    try {
+      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/remove_contains`;
+      const res = await axios.post(requestUrl, {
+        recipe_id: r_id,
+        collection_id: c_id,
+      });
+      console.log(res);
+      alert("Successfully removed!");
+    } catch (err) {
+      console.log(err);
+      alert("An error occured!");
+    }
+  }
+
   const displayCollections = () => {
     console.log(results);
     return results.map(
