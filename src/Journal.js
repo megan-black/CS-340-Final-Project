@@ -13,7 +13,6 @@ const Journal = () => {
 
   async function createJournal() {
     try {
-      console.log("creating journal");
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/create_journal`;
       await axios.post(requestUrl, {
         title: document.getElementById("journal_title").value,
@@ -22,14 +21,12 @@ const Journal = () => {
       setJournalStatus(true);
       checkStatus();
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
 
   async function checkStatus() {
     try {
-      console.log("checking");
       const uid = sessionStorage.getItem("id");
 
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/journal`;
@@ -41,7 +38,6 @@ const Journal = () => {
         setJournalStatus(true);
       } else setJournalStatus(false);
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
@@ -55,7 +51,6 @@ const Journal = () => {
       alert("Your journal has been deleted!");
       setJournalStatus(false);
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
@@ -68,7 +63,6 @@ const Journal = () => {
       });
       if (res.data.length > 0) setEntries(res.data);
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
@@ -83,26 +77,22 @@ const Journal = () => {
       alert("Entry added!");
       document.location.href = "/journal";
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
 
   async function updateEntry(e_id, f_id) {
     try {
-      console.log(e_id, f_id);
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/update_entry`;
       const res = await axios.post(requestUrl, {
         entry_id: e_id,
         food_eaten: f_id,
       });
       setEntries(res.data);
-      console.log(res);
       setEdit(false);
       alert("Entry has been updated!");
       document.location.href = "/journal";
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
@@ -116,14 +106,12 @@ const Journal = () => {
       alert("Entry has been deleted!");
       document.location.href = "/journal";
     } catch (err) {
-      console.log(err);
       alert("An error occurred!");
     }
   }
 
   const handleKeyPress = (e, e_id, f_id) => {
     if (e.which === 13) {
-      console.log("key pressed");
       updateEntry(e_id, f_id);
     }
   };
