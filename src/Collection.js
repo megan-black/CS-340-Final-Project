@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import axios from "axios";
-import { Layout, PageHeader, List, Button, Skeleton, Spin } from "antd";
+import { Layout, PageHeader, List, Button, Spin } from "antd";
 
 const Collection = () => {
   const [results, setResults] = useState();
@@ -10,7 +10,7 @@ const Collection = () => {
   async function getCollection() {
     try {
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/collections`;
-      const res = await axios.get(requestUrl, {
+      const res = await axios.post(requestUrl, {
         id: sessionStorage.getItem("id"),
       });
       console.log(res.data);

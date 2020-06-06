@@ -57,7 +57,7 @@ app.get("/recipe_search", function (req, res, next) {
 
 app.get("/collections", function (req, res, next) {
   var sql =
-    "SELECT Collection.name as c_name, Recipe.name as r_name, * FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
+    "SELECT Collection.name as c_name, Recipe.name as r_name, Recipe.category, Recipe.cook_time, Collection.date_created FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
   pool.query(sql, [req.body.id], function (err, rows, fields) {
     if (err) {
       next(err);
@@ -70,17 +70,17 @@ app.get("/collections", function (req, res, next) {
 // get journal
 
 app.get("/journal", function (req, res, next) {
-  pool.query(
-    "SELECT * FROM Journal WHERE user_id=?",
-    [req.body.user_id],
-    function (err, rows, fields) {
-      if (err) {
-        next(err);
-        return;
-      }
-      res.send(rows);
+  pool.query("SELECT * FROM Journal WHERE user_id=?", [req.body.id], function (
+    err,
+    rows,
+    fields
+  ) {
+    if (err) {
+      next(err);
+      return;
     }
-  );
+    res.send(rows);
+  });
 });
 
 // get entry
