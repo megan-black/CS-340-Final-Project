@@ -26,6 +26,7 @@ const Recipe = () => {
   const [hasEdit, setEdit] = useState();
   const [selectedCategory, setSelectedCategory] = useState();
   const [selectedCollection, setSelectedCollection] = useState();
+  const [selectedRecipe, setSelectedRecipe] = useState();
 
   async function getCollection() {
     try {
@@ -52,6 +53,7 @@ const Recipe = () => {
       console.log(res);
       const addUrl = `http://flip2.engr.oregonstate.edu:56334/add_recipe_ingredients`;
       await axios.post(addUrl, {
+        name: document.getElementById("name").value,
         ingredients: document.getElementById("ingredients").value,
       });
     } catch (err) {
@@ -72,27 +74,39 @@ const Recipe = () => {
     }
   }
 
-  async function updateRecipe(r_id, ing) {
+  async function updateRecipe(r_id, ing, name) {
     try {
-      const requestUrl = `http://flip2.engr.oregonstate.edu:56334/update_recipe`;
-      const res = await axios.post(requestUrl, {
+      const checkUrl = `http://flip2.engr.oregonstate.edu:56334/check_ingredients`;
+      const res = await axios.post(checkUrl, {
         recipe_id: r_id,
-        ingredients: ing,
       });
-      console.log(res);
-      setRecipes(res.data);
+      console.log(res.data.length);
+      if (res.data.length !== 0) {
+        const requestUrl = `http://flip2.engr.oregonstate.edu:56334/update_recipe`;
+        await axios.post(requestUrl, {
+          recipe_id: r_id,
+          ingredients: ing,
+        });
+      } else {
+        const addUrl = `http://flip2.engr.oregonstate.edu:56334/add_recipe_ingredients`;
+        await axios.post(addUrl, {
+          name: name,
+          ingredients: ing,
+        });
+      }
+
+      alert("Ingredient updated!");
     } catch (err) {
       console.log(err);
       alert("An error occured!");
     }
   }
 
-  async function addRecipeToCollection(r_id) {
+  async function addRecipeToCollection() {
     try {
-      console.log(r_id, selectedCollection);
       const requestUrl = `http://flip2.engr.oregonstate.edu:56334/add_contains`;
       const res = await axios.post(requestUrl, {
-        recipe_id: r_id,
+        recipe_id: selectedRecipe,
         collection_id: selectedCollection,
       });
       console.log(res);
@@ -120,9 +134,9 @@ const Recipe = () => {
     }
   }
 
-  const handleKeyUpdate = (e, r_id, ing) => {
+  const handleKeyUpdate = (e, r_id, ing, name) => {
     if (e.which === 13) {
-      updateRecipe(r_id, ing);
+      updateRecipe(r_id, ing, name);
     }
   };
 
@@ -138,17 +152,22 @@ const Recipe = () => {
 
   const renderSelectCollection = () => {
     const children = [];
-
+    const seenArr = [];
     if (collections && collections.length > 0) {
+      console.log(seenArr);
       for (let i = 0; i < collections.length; i++) {
+        if (seenArr.includes(collections[i].collection_id)) {
+          continue;
+        }
         children.push(
           <Option
             value={collections[i].collection_id}
             key={collections[i].collection_id}
           >
-            {collections[i].c_name}
+            {collections[i].name}
           </Option>
         );
+        seenArr.push(collections[i].collection_id);
       }
     } else {
       children.push(
@@ -159,7 +178,13 @@ const Recipe = () => {
     }
 
     return (
-      <Select style={{ width: "250px" }} placeholder="Select a collection">
+      <Select
+        style={{ width: "250px" }}
+        placeholder="Select a collection"
+        onChange={(value) => {
+          setSelectedCollection(`${value}`);
+        }}
+      >
         {children}
       </Select>
     );
@@ -194,7 +219,7 @@ const Recipe = () => {
                   onClick={(e) => setEdit(true)}
                 />,
                 <DeleteOutlined
-                  id={index.recipe_id - 1}
+                  id={index.recipe_id}
                   key="delete"
                   onClick={(e) => deleteRecipe(e.currentTarget.id)}
                 />,
@@ -207,20 +232,23 @@ const Recipe = () => {
                       {renderSelectCollection()}
                     </div>
                   }
-                  onChange={(value) => {
-                    setSelectedCollection(`${value}`);
-                  }}
-                  onConfirm={(e) => addRecipeToCollection(e.currentTarget.id)}
+                  onConfirm={addRecipeToCollection}
                   okText="Confirm"
                   cancelText="Cancel"
                 >
-                  <PlusCircleOutlined id={index.recipe_id + 1} key="add" />
+                  <PlusCircleOutlined
+                    id={index.recipe_id}
+                    key="add"
+                    onClick={(e) => {
+                      setSelectedRecipe(e.currentTarget.id);
+                    }}
+                  />
                 </Popconfirm>,
               ]}
             >
               Category: {index.category}
               <br />
-              Ingredients:
+              Ingredients:{" "}
               {hasEdit ? (
                 <input
                   type="text"
@@ -229,7 +257,12 @@ const Recipe = () => {
                     index.ingredients = e.target.value;
                   }}
                   onKeyPress={(e) =>
-                    handleKeyUpdate(e, index.recipe_id, index.ingredients)
+                    handleKeyUpdate(
+                      e,
+                      index.recipe_id,
+                      index.ingredients,
+                      index.name
+                    )
                   }
                 />
               ) : (

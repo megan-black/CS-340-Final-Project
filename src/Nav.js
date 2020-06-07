@@ -49,45 +49,47 @@ const Nav = () => {
   ];
 
   return (
-    <Menu
-      mode="horizontal"
-      style={{
-        display: "flex",
-        alignContent: "center",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <Menu.Item>
-        <a href="/">
-          <h1>Recipe Builder</h1>
-        </a>
-      </Menu.Item>
-      {items.map((item) => (
-        <Menu.Item key={item.label}>
-          {cookie > -1 ? (
-            <a href={item.href}>
-              <h3>{item.label}</h3>
-            </a>
-          ) : (
-            <div>
-              <a href="/">
+    <div style={{ backgroundColor: "283D3B" }}>
+      <Menu
+        mode="horizontal"
+        style={{
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Menu.Item>
+          <a href="/">
+            <h1>Recipe Builder</h1>
+          </a>
+        </Menu.Item>
+        {items.map((item) => (
+          <Menu.Item key={item.label}>
+            {cookie > -1 ? (
+              <a href={item.href}>
                 <h3>{item.label}</h3>
               </a>
-            </div>
+            ) : (
+              <div>
+                <a href="/">
+                  <h3>{item.label}</h3>
+                </a>
+              </div>
+            )}
+          </Menu.Item>
+        ))}
+        <Menu.Item>
+          {cookie > -1 ? (
+            <Button href="/account" onClick={signOut}>
+              Sign Out
+            </Button>
+          ) : (
+            <Button href="/account">Log In</Button>
           )}
         </Menu.Item>
-      ))}
-      <Menu.Item>
-        {cookie > -1 ? (
-          <Button href="/account" onClick={signOut}>
-            Sign Out
-          </Button>
-        ) : (
-          <Button href="/account">Log In</Button>
-        )}
-      </Menu.Item>
-    </Menu>
+      </Menu>
+    </div>
   );
 };
 
