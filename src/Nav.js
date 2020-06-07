@@ -49,7 +49,7 @@ const Nav = () => {
   ];
 
   return (
-    <div style={{ backgroundColor: "283D3B" }}>
+    <div>
       <Menu
         mode="horizontal"
         style={{
@@ -81,11 +81,13 @@ const Nav = () => {
         ))}
         <Menu.Item>
           {cookie > -1 ? (
-            <Button href="/account" onClick={signOut}>
+            <Button href="/account" onClick={signOut} type="secondary">
               Sign Out
             </Button>
           ) : (
-            <Button href="/account">Log In</Button>
+            <Button href="/account" type="secondary">
+              Log In
+            </Button>
           )}
         </Menu.Item>
       </Menu>

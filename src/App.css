@@ -1,1 +1,70 @@
 @import "~antd/dist/antd.css";
+
+.ant-menu {
+  background-color: #bf4342;
+}
+
+h1 {
+  color: #2f243a;
+}
+
+h3 {
+  color: #e7d7c1;
+}
+
+span {
+  color: #e7d7c1;
+}
+
+b {
+  color: #2f243a;
+}
+
+.ant-card-bordered {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 5px 5px 5px 5px;
+}
+
+.ant-card-head-title {
+  color: #2f243a;
+}
+
+.ant-card-body {
+  color: #2f243a;
+}
+
+.ant-card-actions {
+  background: #bf4342;
+}
+
+.ant-menu-item-active {
+  color: #bf4342;
+  border-bottom-color: #6a2424;
+}
+
+.ant-menu-item-active:hover {
+  color: #bf4342;
+  border-bottom-color: #6a2424;
+}
+
+.ant-menu-horizontal .ant-menu-item-only-child {
+  border-bottom: 1px solid, #772e25;
+}
+
+.ant-layout {
+  background: #f9f6f0;
+}
+
+.ant-page-header-heading-title {
+  color: #2f243a;
+}
+
+.ant-btn-secondary {
+  background-color: #6a2424;
+  border-color: #6a2424;
+}
+
+.ant-btn-primary {
+  background-color: #bf4342;
+  border-color: #6a2424;
+}

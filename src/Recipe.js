@@ -227,7 +227,7 @@ const Recipe = () => {
                   placement="bottom"
                   title={
                     <div>
-                      Which collection(s) would you like to add to?
+                      Confirm the collection below:
                       <br />
                       {renderSelectCollection()}
                     </div>

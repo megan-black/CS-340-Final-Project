@@ -36,15 +36,15 @@ const Home = () => {
             <Card
               title={index.c_name}
               bordered={true}
-              style={{ marginLeft: "10px", marginRight: "10px" }}
+              style={{ marginLeft: "30px", marginRight: "30px" }}
             >
               Category: {index.category}
               <br />
               <b>Date Created:</b> {index.date_created.substring(0, 10)}
-              <Card.Grid style={{ width: "100%" }}>
+              <Card type="inner" style={{ marginTop: "15px" }}>
                 <h4>Included Recipes</h4>
                 <b>{index.r_name}</b> <br /> Cook Time: {index.cook_time}
-              </Card.Grid>
+              </Card>
             </Card>
           </Col>
         );
