@@ -66,7 +66,7 @@ const Home = () => {
             <PageHeader title="Log your food, create collections, and view user-curated recipes!" />
           </Layout>
           <br />
-          <h2>Today's Featured Collections</h2>
+          <h2 align="center">Today's Featured Collections</h2>
           <br />
           <Row>{createCards()}</Row>
         </HomeDiv>
