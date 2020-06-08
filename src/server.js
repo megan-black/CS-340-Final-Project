@@ -5,7 +5,7 @@ var cors = require("cors");
 var pool = require("./dbcon.js").pool;
 var cookieParser = require("cookie-parser");
 
-const port = process.env.PORT || 5000;
+const port = "56334";
 
 app.set("port", port);
 app.use(cookieParser());
@@ -13,12 +13,14 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use((req, res, next) => {
+  console.log(req.method, req.url, req.body);
+  next();
+});
 
 app.get("/", function (req, res, next) {
   res.send({ message: "welcome!" });
 });
-
-// TO DO - ADD TO COLLECTION - (Updating Contains w/ Recipe ID)
 
 // home page
 
@@ -35,16 +37,26 @@ app.get("/home", function (req, res, next) {
   });
 });
 
+// get all recipes
+//
+app.get("/recipes", function (req, res, next) {
+  var sql =
+    "SELECT * FROM Recipe LEFT JOIN Recipe_ingredients using (recipe_id)";
+  pool.query(sql, function (err, rows, fields) {
+    if (err) {
+      next(err);
+      return;
+    }
+    res.send(rows);
+  });
+});
+
 // search functionality
 
 app.get("/recipe_search", function (req, res, next) {
   var sql =
-    "SELECT *, Recipe_ingredients.ingredients FROM Recipe LEFT JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE '%" +
-    pool.escape(req.body.search) +
-    "%'";
-  // var sql =
-  //   "SELECT *, Recipe_ingredients.ingredients FROM Recipe LEFT JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE '%mac%'";
-  pool.query(sql, function (err, rows, fields) {
+    "SELECT *, Recipe_ingredients.ingredients FROM Recipe LEFT JOIN Recipe_ingredients ON Recipe.recipe_id = Recipe_ingredients.recipe_id WHERE name LIKE ?";
+  pool.query(sql, "%" + req.query.search + "%", function (err, rows, fields) {
     if (err) {
       next(err);
       return;
@@ -55,9 +67,9 @@ app.get("/recipe_search", function (req, res, next) {
 
 // get colletions
 
-app.get("/collections", function (req, res, next) {
+app.post("/collections", function (req, res, next) {
   var sql =
-    "SELECT Collection.name as c_name, Recipe.name as r_name, Recipe.category, Recipe.cook_time, Collection.date_created FROM Collection LEFT JOIN Users ON Users.user_id = Collection.user_id JOIN Contains ON Contains.collection_id = Collection.collection_id JOIN Recipe ON Recipe.recipe_id = Contains.recipe_id WHERE Collection.collection_id = Contains.collection_id AND Users.user_id=? ORDER BY Collection.name ASC";
+    "SELECT * FROM Collection LEFT JOIN Users using (`user_id`) LEFT JOIN Contains using (`collection_id`) WHERE user_id=?";
   pool.query(sql, [req.body.id], function (err, rows, fields) {
     if (err) {
       next(err);
@@ -69,23 +81,23 @@ app.get("/collections", function (req, res, next) {
 
 // get journal
 
-app.get("/journal", function (req, res, next) {
-  pool.query("SELECT * FROM Journal WHERE user_id=?", [req.body.id], function (
-    err,
-    rows,
-    fields
-  ) {
-    if (err) {
-      next(err);
-      return;
+app.post("/journal", function (req, res, next) {
+  pool.query(
+    "SELECT * FROM Journal WHERE user_id=?",
+    [req.body.user_id],
+    function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send(rows);
     }
-    res.send(rows);
-  });
+  );
 });
 
 // get entry
 
-app.get("/entry", function (req, res, next) {
+app.post("/entry", function (req, res, next) {
   pool.query(
     "SELECT * FROM Entry WHERE journal_id = (SELECT journal_id FROM Journal WHERE user_id=?)",
     [req.body.user_id],
@@ -99,9 +111,9 @@ app.get("/entry", function (req, res, next) {
   );
 });
 
-// create new entry
+// HANDLING ENTRIES
 
-app.get("/get_journal_id", function (req, res, next) {
+app.post("/get_journal_id", function (req, res, next) {
   var journal_id = -1;
   pool.query(
     "SELECT journal_id FROM Journal WHERE user_id=?",
@@ -117,12 +129,38 @@ app.get("/get_journal_id", function (req, res, next) {
   );
 });
 
-// ADD TEXT ENTRY FOR FOOD
-
 app.post("/create_entry", function (req, res, next) {
   pool.query(
-    "INSERT INTO Entry (date_made, journal_id) VALUES (?, ?)",
-    [new Date(), req.body.journal_id],
+    "INSERT INTO Entry (date_made, journal_id, food_eaten) VALUES (?, (SELECT journal_id from Journal WHERE user_id=?), ?)",
+    [new Date(), req.body.user_id, req.body.food_eaten],
+    function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send(rows);
+    }
+  );
+});
+
+app.post("/update_entry", function (req, res, next) {
+  pool.query(
+    "UPDATE Entry SET food_eaten=? WHERE entry_id=?",
+    [req.body.food_eaten, req.body.entry_id],
+    function (err, rows, fields) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send(rows);
+    }
+  );
+});
+
+app.post("/delete_entry", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Entry WHERE entry_id=?",
+    [req.body.entry_id],
     function (err, rows, fields) {
       if (err) {
         next(err);
@@ -155,9 +193,6 @@ app.post("/auth_user", function (req, res, next) {
     maxAge: 60 * 60 * 1000, // 1 hour
   };
 
-  // req.body.username = "test";
-  // req.body.password = "test";
-
   pool.query(
     "SELECT * FROM Users WHERE username=? AND password=?",
     [req.body.username, req.body.password],
@@ -183,11 +218,11 @@ app.get("/clear_cookie", (req, res) => {
   res.clearCookie("name").end();
 });
 
-// creating a new recipe
+// HANDLING RECIPES
 
 app.post("/new_recipe", function (req, res, next) {
   pool.query(
-    "INSERT INTO Recipe (cook_time, category, name, user_id) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO Recipe (cook_time, category, name, user_id) VALUES (?, ?, ?, ?)",
     [req.body.cook_time, req.body.category, req.body.name, req.body.user_id],
     function (err, result) {
       if (err) {
@@ -199,10 +234,10 @@ app.post("/new_recipe", function (req, res, next) {
   res.sendStatus(200);
 });
 
-app.post("/recipe_ingredients", function (req, res, next) {
+app.post("/add_recipe_ingredients", function (req, res, next) {
   pool.query(
-    "INSERT INTO Recipe_ingredients (ingredients, recipe_id) VALUES (?, ?)",
-    [req.body.ingredients, req.body.recipe_id],
+    "INSERT INTO Recipe_ingredients (ingredients, recipe_id) VALUES (?, (SELECT recipe_id FROM Recipe WHERE name=?))",
+    [req.body.ingredients, req.body.name],
     function (err, result) {
       if (err) {
         next(err);
@@ -214,20 +249,21 @@ app.post("/recipe_ingredients", function (req, res, next) {
 });
 
 // updating a recipe
-
-app.post("/update_recipe", function (req, res, next) {
+app.post("/check_ingredients", function (req, res, next) {
   pool.query(
-    "UPDATE Recipe SET ingredients=? WHERE recipe_id=?",
-    [req.body.ingredients, req.body.recipe_id],
+    "SELECT * FROM Recipe_ingredients WHERE recipe_id=?",
+    [req.body.recipe_id],
     function (err, result) {
       if (err) {
         next(err);
         return;
       }
+      res.send(result);
     }
   );
-  res.sendStatus(200);
+});
 
+app.post("/update_recipe", function (req, res, next) {
   pool.query(
     "UPDATE Recipe_ingredients SET ingredients=? WHERE recipe_id=?",
     [req.body.ingredients, req.body.recipe_id],
@@ -241,36 +277,99 @@ app.post("/update_recipe", function (req, res, next) {
   res.sendStatus(200);
 });
 
+app.post("/delete_ingredients", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Recipe_ingredients WHERE recipe_id=?",
+    [req.body.recipe_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+app.post("/delete_recipe", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Recipe WHERE recipe_id=?",
+    [req.body.recipe_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+// adding/removing from a m-m relationship
+
+app.post("/add_contains", function (req, res, next) {
+  pool.query(
+    "INSERT INTO Contains (recipe_id, collection_id) VALUES (?,?)",
+    [req.body.recipe_id, req.body.collection_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+app.post("/remove_contains", function (req, res, next) {
+  pool.query(
+    "DELETE FROM Contains WHERE recipe_id=? AND collection_id=?",
+    [req.body.recipe_id, req.body.collection_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.sendStatus(200);
+    }
+  );
+});
+
+// COLLECTIONS PAGE!
+
+app.post("/recipes_collection", function (req, res, next) {
+  pool.query(
+    "SELECT * FROM Contains JOIN Recipe using (`recipe_id`) JOIN Recipe_ingredients using (`recipe_id`) WHERE collection_id = (SELECT collection_id FROM Collection WHERE user_id=?)",
+    [req.body.user_id],
+    function (err, result) {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.send(result);
+    }
+  );
+});
+
 // creating a new collection
 
 app.post("/new_collection", function (req, res, next) {
   pool.query(
-    "INSERT INTO Collection (type, name, date_created, user_id) VALUES (?, ?, ?, ?)",
-    [req.body.type, req.body.name, new Date(), req.body.user_id],
+    "INSERT INTO Collection (type, name, date_created, user_id, numrecipes) VALUES (?, ?, ?, ?, ?)",
+    [req.body.type, req.body.name, new Date(), req.body.user_id, 0],
     function (err, result) {
       if (err) {
         next(err);
         return;
       }
+      res.send({ message: "success!" });
     }
   );
-
-  pool.query(
-    "INSERT INTO Contains (collection_id, recipe_id) VALUES (?, ?)",
-    [req.body.collection_id, req.body.recipe_id],
-    function (err, result) {
-      if (err) {
-        next(err);
-        return;
-      }
-    }
-  );
-  res.send({ message: "success!" });
 });
 
 // deleting a collection
 
-app.post("/delete_collection", function (req, res, next) {
+app.post("/delete_contains", function (req, res, next) {
   pool.query(
     "DELETE FROM Contains WHERE collection_id=?",
     [req.body.collection_id],
@@ -282,10 +381,12 @@ app.post("/delete_collection", function (req, res, next) {
       res.send({ message: "deleting..." });
     }
   );
+});
 
+app.post("/delete_collection", function (req, res, next) {
   pool.query(
-    "DELETE FROM Collection WHERE collection_id=?",
-    [req.body.collection_id],
+    "DELETE FROM Collection WHERE collection_id=? AND user_id=?",
+    [req.body.collection_id, req.body.user_id],
     function (err, result) {
       if (err) {
         next(err);

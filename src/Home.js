@@ -5,6 +5,16 @@ import { Row, Col } from "antd";
 import { PageHeader } from "antd";
 import { Card } from "antd";
 import { Spin } from "antd";
+import styled from "styled-components";
+
+const HomeDiv = styled.div`
+  justify-content: center;
+`;
+
+const CollectionCard = styled(Card)`
+  margin-left: 30px;
+  margin-right: 30px;
+`;
 
 const Home = () => {
   const [results, setResults] = useState();
@@ -33,11 +43,7 @@ const Home = () => {
       (index) => {
         return (
           <Col span={6}>
-            <Card
-              title={index.c_name}
-              bordered={true}
-              style={{ marginLeft: "30px", marginRight: "30px" }}
-            >
+            <CollectionCard title={index.c_name} bordered={true}>
               Category: {index.category}
               <br />
               <b>Date Created:</b> {index.date_created.substring(0, 10)}
@@ -45,7 +51,7 @@ const Home = () => {
                 <h4>Included Recipes</h4>
                 <b>{index.r_name}</b> <br /> Cook Time: {index.cook_time}
               </Card>
-            </Card>
+            </CollectionCard>
           </Col>
         );
       })
@@ -55,7 +61,7 @@ const Home = () => {
   return (
     <div>
       {isLoaded === true ? (
-        <div align="center" display="flex" style={{ justifyContent: "center" }}>
+        <HomeDiv align="center" display="flex">
           <Layout style={{ alignItems: "center" }}>
             <PageHeader title="Log your food, create collections, and view user-curated recipes!" />
           </Layout>
@@ -63,7 +69,7 @@ const Home = () => {
           <h2>Today's Featured Collections</h2>
           <br />
           <Row>{createCards()}</Row>
-        </div>
+        </HomeDiv>
       ) : (
         <Spin />
       )}
